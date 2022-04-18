@@ -5,6 +5,7 @@ molecule==3.5.2
 molecule-docker
 ansible-lint
 yamllint
+pyyaml
 
 # Scripts
 requests
