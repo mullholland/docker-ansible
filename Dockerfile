@@ -16,6 +16,7 @@ RUN apt-get update \
        libhdf5-dev \
        libssl-dev \
        libffi-dev \
+       libyaml-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
