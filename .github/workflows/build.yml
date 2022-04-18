@@ -25,7 +25,7 @@ jobs:
         run: docker run --name test-container -d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro docker-test
 
       - name: Verify ansible in the built image.
-        run: docker run --rm -it test-container ansible --version
+        run: docker run --rm test-container ansible --version
 
   # If on master branch, build and release image.
   release:
