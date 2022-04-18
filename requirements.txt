@@ -1,0 +1,19 @@
+# Ansible/Molecule
+ansible-core
+ansible
+molecule==3.5.2
+molecule-docker
+ansible-lint
+yamllint
+
+# Scripts
+requests
+docker
+requests
+netaddr
+
+# hashicorp vault
+hvac
+
+# ansible crypt
+passlib
