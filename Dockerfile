@@ -1,7 +1,7 @@
 FROM python:3.10-slim
 
 LABEL maintainer="mullholland"
-LABEL build_update="2022-04-18"
+LABEL build_update="2022-06-18"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
