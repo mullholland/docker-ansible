@@ -2,6 +2,7 @@
 # Builder Image
 # --------------------------------------------------------------------------------------------------
 FROM python:3.11-alpine3.18 as builder
+ARG VERSION
 
 # Install Ansible Dependencies
 RUN apk --update --no-cache add \
@@ -29,7 +30,6 @@ RUN apk --update --no-cache add \
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"
 
-ARG VERSION
 COPY Dockerfiles/requirements-${VERSION}.txt /tmp
 RUN set -eux \
     && pip3 install --no-cache-dir --upgrade pip wheel \
@@ -58,6 +58,7 @@ RUN set -eux \
 # --------------------------------------------------------------------------------------------------
 FROM python:3.11-alpine3.18 as production
 ARG VERSION
+
 LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
 LABEL "org.opencontainers.image.authors"="mullholland <mullholland@surprise-adoption.de>"
 LABEL "org.opencontainers.image.vendor"="mullholland"

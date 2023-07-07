@@ -3,7 +3,7 @@ ARG VERSION
 # --------------------------------------------------------------------------------------------------
 # Builder Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/docker-ansible:${VERSION} as builder
+FROM mullholland/ansible:${VERSION} as builder
 ARG VERSION
 
 # Make sure we use the virtualenv:
@@ -33,7 +33,7 @@ RUN set -eux \
 # --------------------------------------------------------------------------------------------------
 # Final Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/docker-ansible:${VERSION} as production
+FROM mullholland/ansible:${VERSION} as production
 ARG VERSION
 
 LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
