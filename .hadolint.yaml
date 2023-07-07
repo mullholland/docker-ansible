@@ -1,0 +1,5 @@
+---
+ignored:
+  - DL3018  # We do not pin version to update easily. we accept broken build in this
+  - DL3013  # We do not pin version to update easily. we accept broken build in this
+  - DL4006  # Disable for alpine /bin/sh

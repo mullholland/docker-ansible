@@ -1,0 +1,24 @@
+# Ansible/Molecule
+ansible-core>=2.14,<2.15
+ansible>=7,<8
+pyyaml
+
+# Scripts/modules
+docker
+requests
+netaddr
+Jinja2
+MarkupSafe
+PyNaCl
+bcrypt
+cffi
+pycparser
+junit-xml
+lxml
+paramiko
+
+# hashicorp vault
+hvac
+
+# ansible crypt
+passlib
