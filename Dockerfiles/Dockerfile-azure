@@ -55,7 +55,6 @@ LABEL "org.opencontainers.image.title"="Ansible ${VERSION} azure"
 LABEL "org.opencontainers.image.description"="Ansible ${VERSION} azure"
 
 COPY --from=builder /ansible /ansible
-COPY --from=builder /usr/bin/az /usr/bin/az
 
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"
