@@ -1,39 +1,22 @@
+ARG VERSION
+
 # --------------------------------------------------------------------------------------------------
 # Builder Image
 # --------------------------------------------------------------------------------------------------
-FROM python:3.11-alpine3.18 as builder
+FROM mullholland/ansible:${VERSION} as builder
 ARG VERSION
-
-# Install Ansible Dependencies
-RUN apk --update --no-cache add \
-      ca-certificates \
-      git \
-      curl \
-      wget \
-      unzip \
-      tar \
-      gcc \
-      openssh-client \
-      openssl \
-      openssl-dev \
-      py3-pip \
-      py3-cryptography \
-      python3-dev \
-      rsync \
-      sshpass \
-      yaml-dev \
-      libffi-dev \
-      musl-dev \
-	# create python virtual env
-	&& python -m venv /ansible
 
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"
 
-COPY Dockerfiles/requirements-${VERSION}.txt /tmp
 RUN set -eux \
-    && pip3 install --no-cache-dir --upgrade pip wheel \
-	&& pip3 install --no-cache-dir -r /tmp/requirements-${VERSION}.txt \
+    && apk add --update --no-cache \
+       curl \
+       yq
+
+COPY Dockerfiles/requirements-tools.txt /tmp
+RUN set -eux \
+	&& pip3 install --no-cache-dir -r /tmp/requirements-tools.txt \
 	# Smoketest
 	&& if [ "${VERSION}" != "latest" ]; then \
 		ansible --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
@@ -45,18 +28,12 @@ RUN set -eux \
 		&& ansible-galaxy --version; \
 	fi \
     && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
-	&& find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf \
-	# Clean-up some site-packages to safe space
-	&& pip3 uninstall --yes \
-       setuptools \
-       wheel \
-	&& find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
 	&& find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
 
 # --------------------------------------------------------------------------------------------------
 # Final Image
 # --------------------------------------------------------------------------------------------------
-FROM python:3.11-alpine3.18 as production
+FROM mullholland/ansible:${VERSION} as production
 ARG VERSION
 
 LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
@@ -72,18 +49,15 @@ LABEL "org.opencontainers.image.description"="Ansible ${VERSION} base"
 
 RUN set -eux \
 	&& apk add --no-cache \
-	   # libgcc required for ansible-vault
-       libgcc \
-       py3-pip \
-       python3 \
-       # yaml required for 'libyaml = True' (faster startup time)
-       yaml \
-	   # unzip required for 'ansible.builtin.unarchive' (greater flexability)
-	   unzip \
-	&& find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
-	&& find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
+       bash \
+       git \
+       gnupg \
+       jq \
+       openssh-client
 
 COPY --from=builder /ansible /ansible
+COPY --from=builder /usr/bin/yq /usr/bin/yq
+
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"
 

@@ -10,8 +10,10 @@ on:
     - cron: "10 2 * * *"  # nightly builds
 
 jobs:
+  # -------------------------------------
   # Test the image builds and works correctly.
-  test-base:
+  # -------------------------------------
+  test-docker-builds:
     name: test-base
     runs-on: ubuntu-latest
     strategy:
@@ -24,6 +26,7 @@ jobs:
           - "latest"
         type:
           - "base"
+          - "tools"
 
     steps:
       - uses: actions/checkout@v2
@@ -39,11 +42,13 @@ jobs:
             docker run --rm docker-test ansible --version | grep "core ${{ matrix.version }}"
           fi
 
-  # If on master branch, build and release image.
+  # -------------------------------------
+  # If on master branch, build and release base image.
+  # -------------------------------------
   release-base:
     name: release-base
     runs-on: ubuntu-latest
-    needs: test-base
+    needs: test-docker-builds
     if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
@@ -84,5 +89,55 @@ jobs:
           build-args: |
             VERSION=${{ matrix.version }}
           tags: |
-            mullholland/ansible:${{ matrix.version }}
-            ghcr.io/mullholland/ansible:${{ matrix.version }}
+            ${{ github.repository }}:${{ matrix.version }}
+            ghcr.io/${{ github.repository }}:${{ matrix.version }}
+
+  # -------------------------------------
+  # If on master branch, build and release tools image.
+  # -------------------------------------
+  release-tools:
+    name: release-tools
+    runs-on: ubuntu-latest
+    needs: release-base
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - "2.13"
+          - "2.14"
+          - "2.15"
+          - "latest"
+        type:
+          - "tools"
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image.
+        uses: docker/build-push-action@v4
+        with:
+          context: ./
+          file: Dockerfiles/Dockerfile-${{ matrix.type }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            VERSION=${{ matrix.version }}
+          tags: |
+            ${{ github.repository }}:${{ matrix.version }}-${{ matrix.type }}
+            ghcr.io/${{ github.repository }}:${{ matrix.version }}-${{ matrix.type }}
