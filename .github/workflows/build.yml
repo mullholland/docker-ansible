@@ -17,27 +17,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - version:
-              - "2.13"
-              - "2.14"
-              - "2.15"
-              - "latest"
-            type:
-              - "base"
+        version:
+          - "2.13"
+          - "2.14"
+          - "2.15"
+          - "latest"
+        type:
+          - "base"
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Test building image.
-        run: docker build -t docker-test --build-arg VERSION=${{ matrix.config.version }} -f Dockerfiles/Dockerfile-${{ matrix.config.type }} .
+        run: docker build -t docker-test --build-arg VERSION=${{ matrix.version }} -f Dockerfiles/Dockerfile-${{ matrix.type }} .
 
       - name: Verify ansible in the built image.
         run: |
-          if [ "${{ matrix.config.version }}" = "latest" ];
+          if [ "${{ matrix.version }}" = "latest" ];
             docker run --rm docker-test ansible --version | grep "core 2."
           else
-            docker run --rm docker-test ansible --version | grep "core ${{ matrix.config.version }}"
+            docker run --rm docker-test ansible --version | grep "core ${{ matrix.version }}"
           fi
 
   # If on master branch, build and release image.
@@ -49,14 +48,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - version:
-              - "2.13"
-              - "2.14"
-              - "2.15"
-              - "latest"
-            type:
-              - "base"
+        version:
+          - "2.13"
+          - "2.14"
+          - "2.15"
+          - "latest"
+        type:
+          - "base"
 
     steps:
       - uses: actions/checkout@v2
@@ -84,5 +82,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ github.repository }}:${{ matrix.config.version }}
-            ghcr.io/${{ github.repository }}:${{ matrix.config.version }}
+            ${{ github.repository }}:${{ matrix.version }}
+            ghcr.io/${{ github.repository }}:${{ matrix.version }}
