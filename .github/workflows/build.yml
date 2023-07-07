@@ -141,3 +141,20 @@ jobs:
           tags: |
             ${{ github.repository }}:${{ matrix.version }}-${{ matrix.type }}
             ghcr.io/${{ github.repository }}:${{ matrix.version }}-${{ matrix.type }}
+
+  # -------------------------------------
+  # Update version if everything builds correctly
+  # -------------------------------------
+  release:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs:
+      - release-base
+      - release-tools
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: go-semantic-release/action@v1
+        id: semrel
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          changelog-generator-opt: "emojis=true"
