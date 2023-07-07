@@ -1,0 +1,84 @@
+ARG VERSION
+
+# --------------------------------------------------------------------------------------------------
+# Builder Image
+# --------------------------------------------------------------------------------------------------
+FROM mullholland/ansible:${VERSION}-tools as builder
+ARG VERSION
+
+# Make sure we use the virtualenv:
+ENV PATH="/ansible/bin:$PATH"
+
+RUN set -eux \
+    && apk add --no-cache \
+       # build tools
+       coreutils \
+       g++ \
+       gcc \
+       make \
+       musl-dev \
+       openssl-dev \
+       python3-dev \
+       # misc tools
+       git \
+       # go tools
+       cargo \
+       go
+
+
+COPY Dockerfiles/requirements-aws.txt /tmp
+ENV IAM_AUTHENTICATOR_VERSION="0.6.10"
+RUN set -eux \
+    && pip3 install --no-cache-dir -r /tmp/requirements-aws.txt \
+    && if [ "$(uname -m)" = "aarch64" ]; then \
+        ARCH="arm64"; \
+        wget https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v${IAM_AUTHENTICATOR_VERSION}/aws-iam-authenticator_${IAM_AUTHENTICATOR_VERSION}_linux_${ARCH}; \
+    elif [ "$(uname -m)" = "x86_64" ]; then \
+        ARCH="amd64"; \
+        wget https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v${IAM_AUTHENTICATOR_VERSION}/aws-iam-authenticator_${IAM_AUTHENTICATOR_VERSION}_linux_${ARCH}; \
+    else \
+        fail; \
+    fi \
+    && mv /ansible/aws-iam-authenticator_${IAM_AUTHENTICATOR_VERSION}_linux_${ARCH} /ansible/bin/aws-iam-authenticator \
+    && chmod +x /ansible/bin/aws-iam-authenticator \
+    # Smoketest
+    && if [ "${VERSION}" != "latest" ]; then \
+       ansible --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+       && ansible-playbook --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+       && ansible-galaxy --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+       && /ansible/bin/aws-iam-authenticator version; \
+    else \
+       ansible --version \
+       && ansible-playbook --version \
+       && ansible-galaxy --version \
+       && /ansible/bin/aws-iam-authenticator version; \
+    fi
+
+# --------------------------------------------------------------------------------------------------
+# Final Image
+# --------------------------------------------------------------------------------------------------
+FROM mullholland/ansible:${VERSION}-tools as production
+ARG VERSION
+
+LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
+LABEL "org.opencontainers.image.authors"="mullholland <mullholland@surprise-adoption.de>"
+LABEL "org.opencontainers.image.vendor"="mullholland"
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.url"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.documentation"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.source"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} aws"
+LABEL "org.opencontainers.image.title"="Ansible ${VERSION} aws"
+LABEL "org.opencontainers.image.description"="Ansible ${VERSION} aws"
+
+COPY --from=builder /ansible /ansible
+
+# Make sure we use the virtualenv:
+ENV PATH="/ansible/bin:$PATH"
+
+# Pre-compile Python for better performance
+# RUN set -eux \
+#     && python3 -m compileall -j 0 /usr/lib/python3.11
+
+WORKDIR /ansible
+CMD [ "ansible-playbook", "--version" ]

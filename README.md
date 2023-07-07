@@ -4,6 +4,8 @@
 
 [![Build and Push Container](https://github.com/mullholland/docker-ansible/actions/workflows/build.yml/badge.svg)](https://github.com/mullholland/docker-ansible/actions/workflows/build.yml)
 [![](https://img.shields.io/docker/pulls/mullholland/ansible.svg)](https://hub.docker.com/r/mullholland/ansible)
+[![Docker](https://badgen.net/badge/icon/:latest?icon=docker&label=mullholland/ansible)](https://hub.docker.com/r/mullholland/ansible)
+
 [![License](https://img.shields.io/badge/license-MIT-%233DA639.svg)](https://opensource.org/licenses/MIT)
 
 Tiny Alpine-based multistage-build dockerized version of [Ansible](https://www.ansible.com/) in many different flavours.
@@ -23,11 +25,9 @@ The following table shows a quick overview of provided libraries and tools for e
 | azure   | tools    | `azure-*`              | `az` |
 | aws     | tools    | `awscli`, `botocore`, `boto`, `boto3` | `aws`, `aws-iam-authenticator` |
 
-
 ## :repeat: Rolling releases
 
 The following Docker image tags are rolling releases and are built and updated every night.
-
 
 ### Ansible base
 
@@ -51,6 +51,38 @@ The following Ansible Docker images contain everything from `Ansible base` and a
 | `2.14-tools`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
 | `2.13-tools`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
 
+### Ansible infra
+
+The following Ansible Docker images contain everything from `Ansible tools` and additionally: `rsync` and `sshpass`.
+
+| Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
+|--------------------------|------------|--------------|----------------------------------------------|
+| **`latest-infra`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.15-infra`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
+| `2.14-infra`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
+| `2.13-infra`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
+
+### Ansible azure
+
+The following Ansible Docker images contain everything from `Ansible tools` and additionally: `azure`.
+
+| Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
+|--------------------------|------------|--------------|----------------------------------------------|
+| **`latest-azure`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.15-azure`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
+| `2.14-azure`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
+| `2.13-azure`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
+
+### Ansible aws
+
+The following Ansible Docker images contain everything from `Ansible tools` and additionally: `aws-cli`, `boto`, `boto3` and `botocore`.
+
+| Docker Tag             | Git Ref    | Ansible      | Available Architectures                      |
+|------------------------|------------|--------------|----------------------------------------------|
+| **`latest-aws`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.15-aws`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
+| `2.14-aws`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
+| `2.13-aws`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
 
 ## Inspired by
 
