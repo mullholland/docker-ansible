@@ -27,6 +27,9 @@ jobs:
         type:
           - "base"
           - "tools"
+          - "infra"
+          - "azure"
+          - "aws"
 
     steps:
       - uses: actions/checkout@v3
