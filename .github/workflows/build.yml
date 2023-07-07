@@ -13,7 +13,7 @@ jobs:
   # -------------------------------------
   # Test the image builds and works correctly.
   # -------------------------------------
-  test-base:
+  test-docker-builds:
     name: test-base
     runs-on: ubuntu-latest
     strategy:
