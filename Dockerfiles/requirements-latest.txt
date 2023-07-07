@@ -1,17 +1,21 @@
 # Ansible/Molecule
 ansible-core
 ansible
-molecule==3.5.2
-molecule-docker
-ansible-lint
-yamllint
 pyyaml
 
-# Scripts
-requests
+# Scripts/modules
 docker
 requests
 netaddr
+Jinja2
+MarkupSafe
+PyNaCl
+bcrypt
+cffi
+pycparser
+junit-xml
+lxml
+paramiko
 
 # hashicorp vault
 hvac

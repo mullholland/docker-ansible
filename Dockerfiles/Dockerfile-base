@@ -1,0 +1,98 @@
+# --------------------------------------------------------------------------------------------------
+# Builder Image
+# --------------------------------------------------------------------------------------------------
+FROM python:3.11-alpine3.18 as builder
+
+# Install Ansible Dependencies
+RUN apk --update --no-cache add \
+      ca-certificates \
+      git \
+      curl \
+      wget \
+      unzip \
+      tar \
+      gcc \
+      openssh-client \
+      openssl \
+      openssl-dev \
+      py3-pip \
+      py3-cryptography \
+      python3-dev \
+      rsync \
+      sshpass \
+      yaml-dev \
+      libffi-dev \
+      musl-dev \
+	# create python virtual env
+	&& python -m venv /ansible
+
+# Make sure we use the virtualenv:
+ENV PATH="/ansible/bin:$PATH"
+
+ARG VERSION
+COPY Dockerfiles/requirements-${VERSION}.txt /tmp
+RUN set -eux \
+    && pip3 install --no-cache-dir --upgrade pip wheel \
+	&& pip3 install --no-cache-dir -r /tmp/requirements-${VERSION}.txt \
+	# Smoketest
+	&& if [ "${VERSION}" != "latest" ]; then \
+		ansible --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+		&& ansible-playbook --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+		&& ansible-galaxy --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+"; \
+	else \
+		ansible --version \
+		&& ansible-playbook --version \
+		&& ansible-galaxy --version; \
+	fi \
+    && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
+	&& find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf \
+	# Clean-up some site-packages to safe space
+	&& pip3 uninstall --yes \
+       setuptools \
+       wheel \
+	&& find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
+	&& find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
+
+# --------------------------------------------------------------------------------------------------
+# Final Image
+# --------------------------------------------------------------------------------------------------
+FROM python:3.11-alpine3.18 as production
+ARG VERSION
+LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
+LABEL "org.opencontainers.image.authors"="mullholland <mullholland@surprise-adoption.de>"
+LABEL "org.opencontainers.image.vendor"="mullholland"
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.url"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.documentation"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.source"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} base"
+LABEL "org.opencontainers.image.title"="Ansible ${VERSION} base"
+LABEL "org.opencontainers.image.description"="Ansible ${VERSION} base"
+
+RUN set -eux \
+	&& apk add --no-cache \
+	   # libgcc required for ansible-vault
+       libgcc \
+       py3-pip \
+       python3 \
+       # yaml required for 'libyaml = True' (faster startup time)
+       yaml \
+	   # unzip required for 'ansible.builtin.unarchive' (greater flexability)
+	   unzip \
+	&& find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
+	&& find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
+
+COPY --from=builder /ansible /ansible
+# Make sure we use the virtualenv:
+ENV PATH="/ansible/bin:$PATH"
+
+# Pre-compile Python for better performance
+# RUN set -eux \
+# 	&& python3 -m compileall -j 0 /usr/lib/python3.11
+
+RUN mkdir -p /etc/ansible \
+	&& echo 'localhost' > /etc/ansible/hosts
+
+WORKDIR /ansible
+
+CMD [ "ansible-playbook", "--version" ]
