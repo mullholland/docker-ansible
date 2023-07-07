@@ -26,9 +26,9 @@ RUN set -eux \
        go
 
 
-COPY Dockerfiles/requirements-infra.txt /tmp
+COPY Dockerfiles/requirements-aws.txt /tmp
 RUN set -eux \
-    && pip3 install --no-cache-dir -r /tmp/requirements-infra.txt \
+    && pip3 install --no-cache-dir -r /tmp/requirements-aws.txt \
     # Smoketest
     && if [ "${VERSION}" != "latest" ]; then \
        ansible --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
@@ -58,12 +58,6 @@ LABEL "org.opencontainers.image.source"="https://github.com/mullholland/docker-a
 LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} aws"
 LABEL "org.opencontainers.image.title"="Ansible ${VERSION} aws"
 LABEL "org.opencontainers.image.description"="Ansible ${VERSION} aws"
-
-RUN set -eux \
-    && apk add --no-cache \
-       libpq \
-       rsync \
-       sshpass
 
 COPY --from=builder /ansible /ansible
 COPY --from=builder /usr/bin/aws /usr/bin/aws
