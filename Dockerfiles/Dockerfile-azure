@@ -3,37 +3,44 @@ ARG VERSION
 # --------------------------------------------------------------------------------------------------
 # Builder Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/ansible:${VERSION} as builder
+FROM mullholland/ansible:${VERSION}-tools as builder
 ARG VERSION
 
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"
 
 RUN set -eux \
-    && apk add --update --no-cache \
-       curl \
-       yq
+    && apk add --no-cache \
+       # build tools
+       coreutils \
+       g++ \
+       gcc \
+       linux-headers \
+       make \
+       musl-dev \
+       openssl-dev \
+       python3-dev
 
-COPY Dockerfiles/requirements-tools.txt /tmp
+COPY Dockerfiles/requirements-azure.txt /tmp
 RUN set -eux \
-	&& pip3 install --no-cache-dir -r /tmp/requirements-tools.txt \
-	# Smoketest
-	&& if [ "${VERSION}" != "latest" ]; then \
-		ansible --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
-		&& ansible-playbook --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
-		&& ansible-galaxy --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+"; \
-	else \
-		ansible --version \
-		&& ansible-playbook --version \
-		&& ansible-galaxy --version; \
-	fi \
+    && pip3 install --no-cache-dir -r /tmp/requirements-azure.txt \
+    # Smoketest
+    && if [ "${VERSION}" != "latest" ]; then \
+       ansible --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+       && ansible-playbook --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+       && ansible-galaxy --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+"; \
+    else \
+       ansible --version \
+       && ansible-playbook --version \
+       && ansible-galaxy --version; \
+    fi \
     && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
-	&& find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
+    && find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
 
 # --------------------------------------------------------------------------------------------------
 # Final Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/ansible:${VERSION} as production
+FROM mullholland/ansible:${VERSION}-tools as production
 ARG VERSION
 
 LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
@@ -43,27 +50,19 @@ LABEL "org.opencontainers.image.licenses"="MIT"
 LABEL "org.opencontainers.image.url"="https://github.com/mullholland/docker-ansible"
 LABEL "org.opencontainers.image.documentation"="https://github.com/mullholland/docker-ansible"
 LABEL "org.opencontainers.image.source"="https://github.com/mullholland/docker-ansible"
-LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} tools"
-LABEL "org.opencontainers.image.title"="Ansible ${VERSION} tools"
-LABEL "org.opencontainers.image.description"="Ansible ${VERSION} tools"
-
-RUN set -eux \
-	&& apk add --no-cache \
-       bash \
-       git \
-       gnupg \
-       jq \
-       openssh-client
+LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} azure"
+LABEL "org.opencontainers.image.title"="Ansible ${VERSION} azure"
+LABEL "org.opencontainers.image.description"="Ansible ${VERSION} azure"
 
 COPY --from=builder /ansible /ansible
-COPY --from=builder /usr/bin/yq /usr/bin/yq
+COPY --from=builder /usr/bin/az /usr/bin/az
 
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"
 
 # Pre-compile Python for better performance
 # RUN set -eux \
-# 	&& python3 -m compileall -j 0 /usr/lib/python3.11
+#     && python3 -m compileall -j 0 /usr/lib/python3.11
 
 WORKDIR /ansible
 CMD [ "ansible-playbook", "--version" ]

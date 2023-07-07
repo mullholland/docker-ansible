@@ -1,0 +1,80 @@
+ARG VERSION
+
+# --------------------------------------------------------------------------------------------------
+# Builder Image
+# --------------------------------------------------------------------------------------------------
+FROM mullholland/ansible:${VERSION}-tools as builder
+ARG VERSION
+
+# Make sure we use the virtualenv:
+ENV PATH="/ansible/bin:$PATH"
+
+RUN set -eux \
+    && apk add --no-cache \
+       # build tools
+       coreutils \
+       g++ \
+       gcc \
+       make \
+       musl-dev \
+       openssl-dev \
+       python3-dev \
+       # misc tools
+       git \
+       # go tools
+       cargo \
+       go
+
+
+COPY Dockerfiles/requirements-infra.txt /tmp
+RUN set -eux \
+    && pip3 install --no-cache-dir -r /tmp/requirements-infra.txt \
+    # Smoketest
+    && if [ "${VERSION}" != "latest" ]; then \
+       ansible --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+       && ansible-playbook --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+" \
+       && ansible-galaxy --version | grep ^ansible | grep -E "${VERSION}\.[0-9]+"; \
+    else \
+       ansible --version \
+       && ansible-playbook --version \
+       && ansible-galaxy --version; \
+    fi \
+    && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \
+    && find /usr/lib/ -name '*.pyc' -print0 | xargs -0 -n1 rm -rf
+
+# --------------------------------------------------------------------------------------------------
+# Final Image
+# --------------------------------------------------------------------------------------------------
+FROM mullholland/ansible:${VERSION}-tools as production
+ARG VERSION
+
+LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
+LABEL "org.opencontainers.image.authors"="mullholland <mullholland@surprise-adoption.de>"
+LABEL "org.opencontainers.image.vendor"="mullholland"
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.url"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.documentation"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.source"="https://github.com/mullholland/docker-ansible"
+LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} aws"
+LABEL "org.opencontainers.image.title"="Ansible ${VERSION} aws"
+LABEL "org.opencontainers.image.description"="Ansible ${VERSION} aws"
+
+RUN set -eux \
+    && apk add --no-cache \
+       libpq \
+       rsync \
+       sshpass
+
+COPY --from=builder /ansible /ansible
+COPY --from=builder /usr/bin/aws /usr/bin/aws
+COPY --from=builder /usr/bin/aws-iam-authenticator /usr/bin/aws-iam-authenticator
+
+# Make sure we use the virtualenv:
+ENV PATH="/ansible/bin:$PATH"
+
+# Pre-compile Python for better performance
+# RUN set -eux \
+#     && python3 -m compileall -j 0 /usr/lib/python3.11
+
+WORKDIR /ansible
+CMD [ "ansible-playbook", "--version" ]

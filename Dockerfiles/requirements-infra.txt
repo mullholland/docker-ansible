@@ -1,0 +1,14 @@
+PyMySQL
+docker
+docker-compose
+jsondiff
+netaddr
+pexpect
+psycopg2
+pyldap
+pymongo
+pypsexec
+pywinrm
+pywinrm[credssp]
+pywinrm[kerberos]
+smbprotocol
