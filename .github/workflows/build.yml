@@ -1,5 +1,5 @@
 ---
-name: Build and Push Container
+name: build
 
 on:
   pull_request:
@@ -84,5 +84,5 @@ jobs:
           build-args: |
             VERSION=${{ matrix.version }}
           tags: |
-            ${{ github.repository }}:${{ matrix.version }}
-            ghcr.io/${{ github.repository }}:${{ matrix.version }}
+            mullholland/ansible:${{ matrix.version }}
+            ghcr.io/mullholland/ansible:${{ matrix.version }}
