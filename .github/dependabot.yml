@@ -6,8 +6,26 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/"
+    # Check for updates every day
     schedule:
-      # Check for updates to GitHub Actions every weekday
       interval: "daily"
+    commit-message:
+      prefix: fix
+      prefix-development: chore
+      include: scope
+    assignees:
+      - "mullholland"
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "Dockerfiles/"
+    # Check for updates every day
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: fix
+      prefix-development: chore
+      include: scope
     assignees:
       - "mullholland"
