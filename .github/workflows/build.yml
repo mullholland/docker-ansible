@@ -206,6 +206,7 @@ jobs:
     needs:
       - release-base
       - release-tools
+      - release-variants
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
