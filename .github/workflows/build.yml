@@ -11,7 +11,7 @@ on:
 
 jobs:
   # -------------------------------------
-  # Test the image builds and works correctly.
+  # Test if the base image builds work correctly.
   # -------------------------------------
   test-docker-builds:
     name: test-base
@@ -26,10 +26,6 @@ jobs:
           - "latest"
         type:
           - "base"
-          - "tools"
-          - "infra"
-          - "azure"
-          - "aws"
 
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +42,7 @@ jobs:
           fi
 
   # -------------------------------------
-  # If on master branch, build and release base image.
+  # If on main branch, build and release base image.
   # -------------------------------------
   release-base:
     name: release-base
