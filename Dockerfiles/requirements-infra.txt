@@ -1,6 +1,5 @@
 PyMySQL
 docker
-docker-compose
 jsondiff
 netaddr
 pexpect
