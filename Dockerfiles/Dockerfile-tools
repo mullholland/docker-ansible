@@ -53,6 +53,7 @@ RUN set -eux \
        git \
        gnupg \
        jq \
+       tar \
        openssh-client
 
 COPY --from=builder /ansible /ansible
