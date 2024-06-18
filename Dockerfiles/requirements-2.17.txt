@@ -1,6 +1,6 @@
 # Ansible/Molecule
-ansible-core>=2.14,<2.15
-ansible>=7,<8
+ansible-core>=2.17,<2.18
+ansible>=10,<11
 pyyaml
 
 # Scripts/modules
