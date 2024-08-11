@@ -54,9 +54,9 @@ LABEL "org.opencontainers.image.licenses"="MIT"
 LABEL "org.opencontainers.image.url"="https://github.com/mullholland/docker-ansible"
 LABEL "org.opencontainers.image.documentation"="https://github.com/mullholland/docker-ansible"
 LABEL "org.opencontainers.image.source"="https://github.com/mullholland/docker-ansible"
-LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} aws"
-LABEL "org.opencontainers.image.title"="Ansible ${VERSION} aws"
-LABEL "org.opencontainers.image.description"="Ansible ${VERSION} aws"
+LABEL "org.opencontainers.image.ref.name"="Ansible ${VERSION} ionos"
+LABEL "org.opencontainers.image.title"="Ansible ${VERSION} ionos"
+LABEL "org.opencontainers.image.description"="Ansible ${VERSION} ionos"
 
 COPY --from=builder /ansible /ansible
 
