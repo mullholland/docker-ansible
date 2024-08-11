@@ -64,7 +64,7 @@ RUN set -eux \
         kubectl \
         helm \
    # smoketest
-   && kubectl version --client --short=true 2>&1 | grep -E 'v[.0-9]+' \
+   && kubectl version --client \
    && helm version
 
 # Make sure we use the virtualenv:
