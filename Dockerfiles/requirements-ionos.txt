@@ -1,0 +1,7 @@
+# https://docs.ionos.com/ansible
+ionoscloud
+ionoscloud-dbaas-postgres
+ionoscloud-dbaas-mongo
+ionoscloud-container-registry
+ionoscloud-dataplatform
+ionoscloud-cert-manager

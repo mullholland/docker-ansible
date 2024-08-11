@@ -84,6 +84,17 @@ The following Ansible Docker images contain everything from `Ansible tools` and 
 | `2.16-aws`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
 | `2.15-aws`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
 
+### Ansible ionos
+
+The following Ansible Docker images contain everything from `Ansible tools` and additionally: `ionoscloud`, `ionoscloud-dbaas-postgres`, `ionoscloud-dbaas-mongo`, `ionoscloud-container-registry`, `ionoscloud-dataplatform` and `ionoscloud-cert-manager`.
+
+| Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
+|--------------------------|------------|--------------|----------------------------------------------|
+| **`latest-ionos`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-ionos`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-ionos`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
+| `2.15-ionos`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
+
 ## Inspired by
 
 Inspired by [cytopia/ansible](https://github.com/cytopia/docker-ansible)
