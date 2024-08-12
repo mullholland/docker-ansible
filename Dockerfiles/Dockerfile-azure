@@ -3,7 +3,7 @@ ARG VERSION
 # --------------------------------------------------------------------------------------------------
 # Builder Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/ansible:${VERSION}-tools as builder
+FROM ghcr.io/mullholland/ansible:${VERSION}-tools as builder
 ARG VERSION
 
 # Make sure we use the virtualenv:
@@ -40,7 +40,7 @@ RUN set -eux \
 # --------------------------------------------------------------------------------------------------
 # Final Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/ansible:${VERSION}-tools as production
+FROM ghcr.io/mullholland/ansible:${VERSION}-tools as production
 ARG VERSION
 
 LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
