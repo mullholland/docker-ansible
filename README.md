@@ -95,6 +95,17 @@ The following Ansible Docker images contain everything from `Ansible tools` and 
 | `2.16-ionos`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
 | `2.15-ionos`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
 
+### Ansible k8s (Kubernetes)
+
+The following Ansible Docker images contain everything from `Ansible tools` and additionally: `kubernetes (python)`, `kubectl` and `helm`.
+
+| Docker Tag             | Git Ref    | Ansible      | Available Architectures                      |
+|------------------------|------------|--------------|----------------------------------------------|
+| **`latest-k8s`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-k8s`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-k8s`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
+| `2.15-k8s`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
+
 ## Inspired by
 
 Inspired by [cytopia/ansible](https://github.com/cytopia/docker-ansible)
