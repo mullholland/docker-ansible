@@ -66,14 +66,14 @@ RUN apk add --no-cache curl \
       curl -sL https://github.com/ionos-cloud/ionosctl/releases/download/v${IONOSCTL_VERSION}/ionosctl-${IONOSCTL_VERSION}-linux-${ARCH}.tar.gz | tar -xzv; \
     elif [ "$(uname -m)" = "x86_64" ]; then \
       ARCH="amd64"; \
-      curl -sL https://github.com/ionos-cloud/ionosctl/releases/download/v${IONOSCTL_VERSION}/ionosctl-${IONOSCTL_VERSION}-linux-${ARCH}.tar.gz | tar -xzv; \; \
+      curl -sL https://github.com/ionos-cloud/ionosctl/releases/download/v${IONOSCTL_VERSION}/ionosctl-${IONOSCTL_VERSION}-linux-${ARCH}.tar.gz | tar -xzv; \
     else \
       fail; \
     fi \
     # Move the binary somewhere in your $PATH:
     && mv ionosctl /usr/local/bin \
     # Use the ionosctl CLI
-    && ionosctl help
+    && ionosctl version
 
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"
