@@ -23,7 +23,9 @@ The following table shows a quick overview of provided libraries and tools for e
 | tools   | base     | `dnspython`, `JMESPath` | `bash`, `git`, `gpg`, `jq`, `ssh`, `yq` |
 | infra   | tools    | `docker`, `docker-compose`, `jsondiff`, `netaddr`, `pexpect`, `psycopg2`, `pyldap`, `pypsexec`, `pymongo`, `PyMySQL`, `pywinrm`, `smbprotocol` | `rsync`, `sshpass` |
 | azure   | tools    | `azure-*`              | `az` |
-| aws     | tools    | `awscli`, `botocore`, `boto`, `boto3` | `aws`, `aws-iam-authenticator` |
+| aws     | tools    | `botocore`, `boto`, `boto3` | `aws`, `aws-iam-authenticator`, `ssm-session-manager` |
+| ionos   | tools    | `ionoscloud`, `ionoscloud-dbaas-postgres`, `ionoscloud-dbaas-mongo`, `ionoscloud-container-registry`, `ionoscloud-dataplatform`, `ionoscloud-cert-manager` |   |
+| k8s     | tools    | `kubernetes` | `kubectl`, `helm` |
 
 ## :repeat: Rolling releases
 
