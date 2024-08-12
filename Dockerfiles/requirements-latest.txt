@@ -16,6 +16,7 @@ pycparser
 junit-xml
 lxml
 paramiko
+jsonpatch
 
 # hashicorp vault
 hvac
