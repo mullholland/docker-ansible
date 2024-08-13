@@ -11,3 +11,4 @@ pywinrm
 pywinrm[credssp]
 pywinrm[kerberos]
 smbprotocol
+proxmoxer

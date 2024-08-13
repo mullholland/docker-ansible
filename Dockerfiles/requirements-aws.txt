@@ -1,4 +1,3 @@
-awscli
 botocore
 boto
 boto3

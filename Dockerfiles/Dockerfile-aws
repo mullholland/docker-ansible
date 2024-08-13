@@ -3,7 +3,7 @@ ARG VERSION
 # --------------------------------------------------------------------------------------------------
 # Builder Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/ansible:${VERSION}-tools as builder
+FROM ghcr.io/mullholland/ansible:${VERSION}-tools as builder
 ARG VERSION
 
 # Make sure we use the virtualenv:
@@ -57,7 +57,7 @@ RUN set -eux \
 # --------------------------------------------------------------------------------------------------
 # Final Image
 # --------------------------------------------------------------------------------------------------
-FROM mullholland/ansible:${VERSION}-tools as production
+FROM ghcr.io/mullholland/ansible:${VERSION}-tools as production
 ARG VERSION
 
 LABEL "maintainer"="mullholland <mullholland@surprise-adoption.de>"
@@ -72,6 +72,13 @@ LABEL "org.opencontainers.image.title"="Ansible ${VERSION} aws"
 LABEL "org.opencontainers.image.description"="Ansible ${VERSION} aws"
 
 COPY --from=builder /ansible /ansible
+RUN set -eux \
+    && apk add --no-cache \
+        aws-cli \
+    && apk add --no-cache aws-session-manager-plugin --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
+    # Smoketest
+    && aws --version \
+    && session-manager-plugin
 
 # Make sure we use the virtualenv:
 ENV PATH="/ansible/bin:$PATH"

@@ -23,7 +23,9 @@ The following table shows a quick overview of provided libraries and tools for e
 | tools   | base     | `dnspython`, `JMESPath` | `bash`, `git`, `gpg`, `jq`, `ssh`, `yq` |
 | infra   | tools    | `docker`, `docker-compose`, `jsondiff`, `netaddr`, `pexpect`, `psycopg2`, `pyldap`, `pypsexec`, `pymongo`, `PyMySQL`, `pywinrm`, `smbprotocol` | `rsync`, `sshpass` |
 | azure   | tools    | `azure-*`              | `az` |
-| aws     | tools    | `awscli`, `botocore`, `boto`, `boto3` | `aws`, `aws-iam-authenticator` |
+| aws     | tools    | `botocore`, `boto`, `boto3` | `aws`, `aws-iam-authenticator`, `ssm-session-manager` |
+| ionos   | tools    | `ionoscloud`, `ionoscloud-dbaas-postgres`, `ionoscloud-dbaas-mongo`, `ionoscloud-container-registry`, `ionoscloud-dataplatform`, `ionoscloud-cert-manager` |   |
+| k8s     | tools    | `kubernetes` | `kubectl`, `helm` |
 
 ## :repeat: Rolling releases
 
@@ -36,9 +38,9 @@ The following Ansible Docker only contain Ansible itself.
 | Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
 |--------------------------|------------|--------------|----------------------------------------------|
 | **`latest`**             | main       | latest       | `amd64`, `arm64`                             |
+| `2.17`                   | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16`                   | main       | **`2.16.x`** | `amd64`, `arm64`                             |
 | `2.15`                   | main       | **`2.15.x`** | `amd64`, `arm64`                             |
-| `2.14`                   | main       | **`2.14.x`** | `amd64`, `arm64`                             |
-| `2.13`                   | main       | **`2.13.x`** | `amd64`, `arm64`                             |
 
 ### Ansible tools
 
@@ -47,9 +49,9 @@ The following Ansible Docker images contain everything from `Ansible base` and a
 | Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
 |--------------------------|------------|--------------|----------------------------------------------|
 | **`latest-tools`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-tools`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-tools`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
 | `2.15-tools`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
-| `2.14-tools`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
-| `2.13-tools`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
 
 ### Ansible infra
 
@@ -58,9 +60,9 @@ The following Ansible Docker images contain everything from `Ansible tools` and 
 | Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
 |--------------------------|------------|--------------|----------------------------------------------|
 | **`latest-infra`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-infra`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-infra`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
 | `2.15-infra`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
-| `2.14-infra`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
-| `2.13-infra`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
 
 ### Ansible azure
 
@@ -69,9 +71,9 @@ The following Ansible Docker images contain everything from `Ansible tools` and 
 | Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
 |--------------------------|------------|--------------|----------------------------------------------|
 | **`latest-azure`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-azure`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-azure`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
 | `2.15-azure`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
-| `2.14-azure`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
-| `2.13-azure`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
 
 ### Ansible aws
 
@@ -80,9 +82,31 @@ The following Ansible Docker images contain everything from `Ansible tools` and 
 | Docker Tag             | Git Ref    | Ansible      | Available Architectures                      |
 |------------------------|------------|--------------|----------------------------------------------|
 | **`latest-aws`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-aws`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-aws`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
 | `2.15-aws`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
-| `2.14-aws`             | main       | **`2.14.x`** | `amd64`, `arm64`                             |
-| `2.13-aws`             | main       | **`2.13.x`** | `amd64`, `arm64`                             |
+
+### Ansible ionos
+
+The following Ansible Docker images contain everything from `Ansible tools` and additionally: `ionoscloud`, `ionoscloud-dbaas-postgres`, `ionoscloud-dbaas-mongo`, `ionoscloud-container-registry`, `ionoscloud-dataplatform` and `ionoscloud-cert-manager`.
+
+| Docker Tag               | Git Ref    | Ansible      | Available Architectures                      |
+|--------------------------|------------|--------------|----------------------------------------------|
+| **`latest-ionos`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-ionos`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-ionos`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
+| `2.15-ionos`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
+
+### Ansible k8s (Kubernetes)
+
+The following Ansible Docker images contain everything from `Ansible tools` and additionally: `kubernetes (python)`, `kubectl` and `helm`.
+
+| Docker Tag             | Git Ref    | Ansible      | Available Architectures                      |
+|------------------------|------------|--------------|----------------------------------------------|
+| **`latest-k8s`**       | main       | latest       | `amd64`, `arm64`                             |
+| `2.17-k8s`             | main       | **`2.17.x`** | `amd64`, `arm64`                             |
+| `2.16-k8s`             | main       | **`2.16.x`** | `amd64`, `arm64`                             |
+| `2.15-k8s`             | main       | **`2.15.x`** | `amd64`, `arm64`                             |
 
 ## Inspired by
 
