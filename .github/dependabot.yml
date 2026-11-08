@@ -18,8 +18,8 @@ updates:
 
   # Enable version updates for Docker
   - package-ecosystem: "docker"
-    # Look for a `Dockerfile` in the `root` directory
-    directory: "/"
+    # Look for Dockerfiles in the `Dockerfiles` directory
+    directory: "/Dockerfiles"
     # Check for updates every day
     schedule:
       interval: "daily"
